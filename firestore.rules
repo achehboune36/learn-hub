@@ -1,0 +1,67 @@
+rules_version = '2';
+
+// Every document a learner owns lives under users/{uid}. Nothing else is
+// writable, and nothing is readable across accounts.
+//
+// Quiz answer keys ship in the JS bundle, not the database, so there is no
+// sensitive content here to protect beyond the user's own history.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /users/{uid} {
+      allow read: if isOwner(uid);
+      allow create: if isOwner(uid) && validProfile(request.resource.data);
+      allow update: if isOwner(uid) && validProfile(request.resource.data);
+      allow delete: if false;                  // account deletion is a deliberate, manual act
+
+      // One document per course. Small, merge-written, read as a collection
+      // exactly once per app session.
+      match /progress/{courseId} {
+        allow read: if isOwner(uid);
+        allow write: if isOwner(uid)
+                     && request.resource.data.keys().hasOnly([
+                          'courseId', 'courseVersion', 'lastChapterId', 'secondsSpent',
+                          'startedAt', 'completedAt', 'chapters', 'updatedAt'
+                        ])
+                     && request.resource.data.secondsSpent is number
+                     && request.resource.data.secondsSpent >= 0;
+      }
+
+      // Append-only study log. Sessions are never edited after the fact.
+      match /sessions/{sessionId} {
+        allow read: if isOwner(uid);
+        allow create: if isOwner(uid) && validSession(request.resource.data);
+        allow update, delete: if false;
+      }
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+
+  function isOwner(uid) {
+    return request.auth != null && request.auth.uid == uid;
+  }
+
+  function validProfile(data) {
+    return data.keys().hasOnly([
+             'uid', 'displayName', 'photoURL', 'email', 'createdAt',
+             'totalSeconds', 'sessionCount', 'currentStreak', 'longestStreak', 'lastStudyDay'
+           ])
+           // increment() sentinels arrive as numbers after evaluation, so a
+           // simple type check still holds for the batched counter update.
+           && (!('totalSeconds' in data) || data.totalSeconds is number)
+           && (!('sessionCount' in data) || data.sessionCount is number);
+  }
+
+  function validSession(data) {
+    return data.keys().hasOnly(['startedAt', 'endedAt', 'seconds', 'courseId', 'chapterId'])
+           && data.seconds is number
+           && data.seconds > 0
+           && data.seconds <= 86400          // a single session cannot exceed a day
+           && data.startedAt is number
+           && data.endedAt is number
+           && data.endedAt >= data.startedAt;
+  }
+}

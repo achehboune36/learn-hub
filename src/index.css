@@ -1,0 +1,124 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --surface-base: 250 250 251;
+    --surface-raised: 255 255 255;
+    --surface-overlay: 255 255 255;
+    --surface-sunken: 243 244 246;
+    --content-primary: 17 20 26;
+    --content-secondary: 71 79 92;
+    --content-muted: 130 138 152;
+    --line: 226 229 234;
+    --line-strong: 205 210 218;
+    --brand: 79 92 224;
+    --brand-soft: 232 234 253;
+    --brand-contrast: 255 255 255;
+    --positive: 22 143 96;
+    --caution: 181 122 12;
+    --negative: 199 62 62;
+    color-scheme: light;
+  }
+
+  .dark {
+    --surface-base: 11 13 18;
+    --surface-raised: 19 22 30;
+    --surface-overlay: 26 30 40;
+    --surface-sunken: 15 17 23;
+    --content-primary: 235 238 244;
+    --content-secondary: 165 173 187;
+    --content-muted: 116 124 139;
+    --line: 39 44 56;
+    --line-strong: 56 63 78;
+    --brand: 129 140 248;
+    --brand-soft: 33 37 66;
+    --brand-contrast: 12 14 20;
+    --positive: 52 187 132;
+    --caution: 224 168 48;
+    --negative: 240 110 110;
+    color-scheme: dark;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    @apply bg-surface-base text-content-primary font-sans antialiased;
+    margin: 0;
+    min-height: 100vh;
+  }
+
+  ::selection { background: rgb(var(--brand) / 0.25); }
+
+  /* Scrollbars that don't fight the theme */
+  * { scrollbar-width: thin; scrollbar-color: rgb(var(--line-strong)) transparent; }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-thumb {
+    background: rgb(var(--line-strong));
+    border-radius: 99px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-track { background: transparent; }
+
+  :focus-visible {
+    outline: 2px solid rgb(var(--brand));
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-surface-raised border border-line rounded-2xl shadow-card;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-medium
+           transition-colors disabled:opacity-45 disabled:pointer-events-none;
+  }
+  .btn-primary { @apply btn bg-brand text-brand-contrast hover:opacity-90; }
+  .btn-ghost   { @apply btn text-content-secondary hover:bg-surface-sunken hover:text-content-primary; }
+  .btn-outline { @apply btn border border-line text-content-secondary hover:border-line-strong hover:text-content-primary; }
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-full border border-line bg-surface-sunken
+           px-2.5 py-0.5 text-[11px] font-medium text-content-secondary;
+  }
+  .num { font-variant-numeric: tabular-nums; }
+}
+
+/* ---- Prose: chapter body copy ---- */
+.prose-chapter {
+  @apply text-[15.5px] leading-[1.75] text-content-secondary;
+}
+.prose-chapter > * + * { margin-top: 1.1em; }
+.prose-chapter h1, .prose-chapter h2, .prose-chapter h3, .prose-chapter h4 {
+  @apply text-content-primary font-semibold tracking-tight;
+  scroll-margin-top: 6rem;
+}
+.prose-chapter h1 { @apply text-2xl mt-10; }
+.prose-chapter h2 { @apply text-xl mt-10 pb-2 border-b border-line; }
+.prose-chapter h3 { @apply text-base mt-7; }
+.prose-chapter h4 { @apply text-sm uppercase tracking-wide text-content-muted mt-6; }
+.prose-chapter strong { @apply text-content-primary font-semibold; }
+.prose-chapter a { @apply text-brand underline underline-offset-2 decoration-brand/40 hover:decoration-brand; }
+.prose-chapter ul { @apply list-disc pl-5 space-y-1.5 marker:text-content-muted; }
+.prose-chapter ol { @apply list-decimal pl-5 space-y-1.5 marker:text-content-muted; }
+.prose-chapter li > ul, .prose-chapter li > ol { margin-top: 0.4em; }
+.prose-chapter blockquote {
+  @apply border-l-2 border-line-strong pl-4 italic text-content-muted;
+}
+.prose-chapter code {
+  @apply font-mono text-[0.86em] bg-surface-sunken border border-line
+         rounded px-1.5 py-0.5 text-content-primary;
+}
+.prose-chapter pre code { @apply bg-transparent border-0 p-0; }
+.prose-chapter hr { @apply border-line my-8; }
+.prose-chapter table { @apply w-full text-sm border-collapse; }
+.prose-chapter th {
+  @apply text-left font-semibold text-content-primary border-b border-line-strong py-2 px-3;
+}
+.prose-chapter td { @apply border-b border-line py-2 px-3 align-top; }
+
+/* Mermaid renders inline SVG; let it breathe and scroll on small screens. */
+.mermaid-host svg { max-width: 100%; height: auto; }
