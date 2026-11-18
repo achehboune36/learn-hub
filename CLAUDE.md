@@ -34,9 +34,9 @@ npm run deploy     # build + firebase deploy   (live: https://learnhub-35520.web
 
 ## Setup on a new machine
 
-`.env.local` is gitignored and must be recreated from `.env.example` using the web config at
-Firebase console → project `learnhub-35520` → Project settings → Your apps. Without it the app
-still runs, in local mode, storing progress in the browser.
+`npm install` and go — `.env.local` is committed (the repo is private, and the Firebase web
+config in it is public by design: it ships in the client bundle). Without it the app still runs,
+in local mode, storing progress in the browser.
 
 The Firebase CLI lives at `~/.firebase-cli` (isolated install — `firebase-tools` v13 conflicts
 with this project's `firebase` SDK over an ESM-only `uuid`, and v14 needs Node 20).

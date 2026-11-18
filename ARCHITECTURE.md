@@ -140,7 +140,8 @@ Initial load is ~190 kB gzipped, most of it the Firebase SDK.
 
 ## 7. Auth and local mode
 
-With `VITE_FIREBASE_*` set: Google sign-in, progress synced across devices.
+With `VITE_FIREBASE_*` set (committed in `.env.local`; the repo is private and these values are
+public by design anyway): Google sign-in, progress synced across devices.
 Without: a stable `local:<id>` identity, everything in `localStorage`, the app fully usable.
 
 `lib/repo.ts` dispatches on the uid prefix, so no page or store knows which backend it is on.

@@ -33,6 +33,7 @@ everything works. Add the keys below when you want cross-device sync.
    it cannot be changed afterwards.
 4. **Project settings → General → Your apps → Web (`</>`)** → register an app → copy the config.
 5. Create `.env.local` from `.env.example` and paste the values in.
+   (Already committed for `learnhub-35520` — this step is for a fresh project.)
 6. Put your project ID in `.firebaserc`.
 
 ```bash
