@@ -1,9 +1,8 @@
 node_modules
 dist
-# .env.local is tracked deliberately: this repo is private, and the Firebase web
-# config it holds is public by design — it ships in the client bundle and is
-# readable from the deployed site. Do not put real secrets (service-account
-# keys, paid API keys) in it; those need a different home.
+# Firebase web config lives in .env.local (see .env.example). It is public by design,
+# but each machine keeps its own copy, so it is not tracked.
+.env.local
 .env.*.local
 .firebase
 *.log
